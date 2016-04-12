@@ -11,6 +11,7 @@
 # the need to adopt the old computer.
 CRASHPLAN_DIR="/usr/local/etc/crashplan"
 
+# This is where incoming backups (i.e. using the Crashplan 
 # Pointing DATA_DIR to an existing CrashPlan backup archive
 # will allow the new instance of CrashPlan to skip a lot of time
 # synchronizing the backup state.

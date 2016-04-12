@@ -3,7 +3,9 @@
 # Startup script for running CrashPlan in a Docker container on a Synology
 # NAS.
 #
-# AJ Kerrigan
+# PJ Meyer
+# (modifications made from original by AJ Kerrigan)
+
 
 DOCKER=/var/packages/Docker/target/usr/bin/docker
 IMAGE=ajkerrigan/crashplan
