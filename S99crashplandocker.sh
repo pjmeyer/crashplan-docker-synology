@@ -59,7 +59,7 @@ _start ()
     if [ -z "${CONTAINER_ID}" ]; then
         echo "No existing CrashPlan container found. Running image \"${IMAGE}\"."
         ${RUN_CMD} ${IMAGE}
-    elif [ "${CONTAINER_STATUS}" == "exited" ]; then
+    elif [ "${CONTAINER_STATUS}" == "exited" ] || [ "${CONTAINER_STATUS}" == "created" ]; then
         echo "Starting CrashPlan container with ID ${CONTAINER_ID}."
         ${START_CMD} ${CONTAINER_ID}
     else
