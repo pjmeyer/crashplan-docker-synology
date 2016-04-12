@@ -74,6 +74,7 @@ _stop ()
     elif [ "${CONTAINER_STATUS}" == "running" ]; then
         echo "Stopping CrashPlan container (ID ${CONTAINER_ID})."
         ${STOP_CMD} ${CONTAINER_ID}
+        CONTAINER_STATUS=`${DOCKER} inspect --format="{{.SynoStatus}}" ${CONTAINER_ID}` # Update container status
     else
         echo "Skipping stop for CrashPlan container (ID ${CONTAINER_ID}) with \"${CONTAINER_STATUS}\" status."
     fi
@@ -91,7 +92,6 @@ _remove_container ()
 _restart ()
 {
     _stop
-    sleep 1s # _start won't pick up the new status if we go too fast.
     _start
 }
 
