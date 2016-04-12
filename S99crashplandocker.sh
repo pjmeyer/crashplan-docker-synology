@@ -46,6 +46,8 @@ echo "USER_VOLUMES=$USER_VOLUMES"
 
 VOLUMES="${USER_VOLUMES} -v ${CRASHPLAN_DIR}:/config -v ${DATA_DIR}:/data -v /etc/localtime:/etc/localtime:ro"
 PORTS="-p 4242:4242 -p 4243:4243"
+PS_FORMAT="\"table {{.Names}}\t{{.Image}}\t{{.CreatedAt}}\t{{.Status}}\""
+
 RUN_CMD="${DOCKER} run -d --net=host --name=crashplan ${VOLUMES} ${PORTS}"
 START_CMD="${DOCKER} start"
 STOP_CMD="${DOCKER} stop"
@@ -62,6 +64,7 @@ _start ()
     elif [ "${CONTAINER_STATUS}" == "exited" ] || [ "${CONTAINER_STATUS}" == "created" ]; then
         echo "Starting CrashPlan container with ID ${CONTAINER_ID}."
         ${START_CMD} ${CONTAINER_ID}
+        CONTAINER_STATUS=`${DOCKER} inspect --format="{{.SynoStatus}}" ${CONTAINER_ID}` # Update container status
     else
         echo "Skipping start for CrashPlan container (ID ${CONTAINER_ID}) with \"${CONTAINER_STATUS}\" status."
     fi
@@ -126,20 +129,19 @@ status)
     if [ -z "${CONTAINER_ID}" ]; then
         echo "No CrashPlan container found."
     else
-        echo "
-[[ Docker Container Status ]]
-
-`${PS_CMD}`
-
-[[ CrashPlan Service Information ]]
-"
-        awk -F ',' '{
-            printf "%-15s %s\n%-15s %d\n%-15s %-15s\n\n",
-            "Host",$3,
-            "Port",$1,
-            "Auth Token",$2
-        }' ${CRASHPLAN_DIR}/id/.ui_info
-        grep CPVERSION "${CRASHPLAN_DIR}/log/app.log"
+        printf "\n[[ Docker Container Status ]]\n\n"
+        eval ${PS_CMD} --format="$PS_FORMAT"
+        
+        if [ "${CONTAINER_STATUS}" == "running" ]; then
+            printf "\n[[ CrashPlan Service Information ]]\n\n"
+            awk -F ',' '{
+                printf "%-15s %s\n%-15s %d\n%-15s %-15s\n\n",
+                "Host",$3,
+                "Port",$1,
+                "Auth Token",$2
+            }' ${CRASHPLAN_DIR}/id/.ui_info
+            grep CPVERSION "${CRASHPLAN_DIR}/log/app.log"
+        fi
     fi
     exit 0
     ;;
