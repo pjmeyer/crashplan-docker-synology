@@ -88,6 +88,12 @@ _remove_container ()
     fi
 }
 
+_restart ()
+{
+    _stop
+    _start
+}
+
 _recreate()
 {
     _remove_container
@@ -102,6 +108,11 @@ start)
 
 stop)
     _stop
+    exit 0
+    ;;
+
+restart)
+    _restart
     exit 0
     ;;
 
