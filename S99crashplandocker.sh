@@ -91,6 +91,7 @@ _remove_container ()
 _restart ()
 {
     _stop
+    sleep 1s # _start won't pick up the new status if we go too fast.
     _start
 }
 
