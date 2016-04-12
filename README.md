@@ -38,22 +38,31 @@ Before trying to run CrashPlan in a Docker container, it's a good idea to:
 * Install the Docker package via the DSM Package Manager
 * Stop any existing CrashPlan instances
 * SSH to your Synology NAS
+* Switch to root user (if you ssh'd in as another user, use `sudo -i`)
 * Clone this repository to /root
-    * Note: If you don't have `git` installed, install the `ipkg` package manager and install it.
+    * Note: If you don't have `git` installed, you can install the `ipkg` package manager and install it. Or, you can install the 'Git Server' package from the DSM package manager.
     * ipkg install help [here](http://www.ingmarverheij.com/how-to-install-ipkg-on-synology-nas-ds212/)
 * Symbolically link the start up script
    * `ln -s /root/crashplan-docker-synology/S99crashplandocker.sh /usr/local/etc/rc.d/S99crashplandocker.sh`
+* (Optional) link the script to /usr/local/bin to make it easier to run from the commandline
+   * `ln -s /root/crashplan-docker-synology/S99crashplandocker.sh /usr/local/bin/crashplan
 * Review the predefined variables in the S99crashplandocker.sh script. If you have different locations for your installation, you will need to update the variables.
     * Copy the user variables file to /root
         * `cp /root/crashplan-docker-synology/cp-user-vars.sh /root`
     * Edit `/root/cp-user-vars.sh`
     * Save the file
+    * Make sure new folders exist (e.g. If '/usr/local/etc/crashplan' doesn't exist, starting the container will fail)
 * Run `/usr/local/etc/rc.d/S99crashplandocker.sh start` to start the container.
 * Wait 10-20 seconds
 * Run `/usr/local/etc/rc.d/S99crashplandocker.sh status` to see the running state of the container
    * This command also shows the authorization token required for accessing the CrashPlan UI from a remote computer
 * Connect to the headless service using CrashPlan Desktop on a remote computer.
    * See [CrashPlan's documentation](http://support.code42.com/CrashPlan/4/Configuring/Using_CrashPlan_On_A_Headless_Computer) for help with this, and consult `/usr/local/etc/rc.d/S99crashplandocker.sh status` for details about the running CrashPlan instance.
+   * A few things to note:
+      * The Auth Token changes on container restart/recreation.
+      * Make sure you keep your SSH tunnel (`ssh -L 4200:localhost:4243 <user>@<synology IP>`) open for the client to connect.
+      * If you see `channel X: open failed: administratively prohibited`, then your SSH server on the NAS is likely rejecting the connection. (this likely happened if you connected with a user other than 'admin')
+        * You can edit your `/etc/ssh/sshd_config` file, and comment out or change the `AllowTCPForwarding no` setting, and restart your the SSH service (or your NAS).
 
 ## Upgrading
 
