@@ -4,16 +4,13 @@ This is an attempt to get CrashPlan running on a Synology NAS inside a Docker co
 
 DSM Version: 6.0-7321
 
-*(Tested by [ajkerrigan](https://github.com/ajkerrigan/crashplan-docker-synology))*
 Device | RAM
 -------|----
-Synology DS713+ | 4GB
-Synology DS412+ | 2GB
-
-Device | RAM
--------|----
+Synology DS713+* | 4GB
+Synology DS412+* | 2GB
 Synology DS1815+ | 16GB
 
+*(Originally tested by [ajkerrigan](https://github.com/ajkerrigan/crashplan-docker-synology))
 
 I have been running the [PC Load Letter CrashPlan Packages](http://pcloadletter.co.uk/2012/01/30/crashplan-syno-package/)
 for a long time. They certainly made it much easier to deal with CrashPlan updates,
